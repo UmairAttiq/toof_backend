@@ -28,6 +28,7 @@ import { SessionService } from 'src/session/session.service';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { Session } from 'src/session/entities/session.entity';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
+import { UserProfileStatusEnum } from 'src/users/enums/user.enum';
 
 @Injectable()
 export class AuthService {
@@ -188,38 +189,41 @@ export class AuthService {
     };
   }
 
-  async register(dto: AuthRegisterLoginDto): Promise<void> {
+  async register(dto: AuthRegisterLoginDto): Promise<User> {
     const user = await this.usersService.create({
       ...dto,
       email: dto.email,
       role: {
         id: RoleEnum.user,
       } as Role,
+      // you can set the status as per your requirement 
       status: {
-        id: StatusEnum.inactive,
+        id: StatusEnum.active,
       } as Status,
+      profile_status: UserProfileStatusEnum.REGISTRATION
     });
+    console.log("useruseruseruseruseruseruseruseruseruser",user)
+    return user;
+    // const hash = await this.jwtService.signAsync(
+    //   {
+    //     confirmEmailUserId: user.id,
+    //   },
+    //   {
+    //     secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+    //       infer: true,
+    //     }),
+    //     expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
+    //       infer: true,
+    //     }),
+    //   },
+    // );
 
-    const hash = await this.jwtService.signAsync(
-      {
-        confirmEmailUserId: user.id,
-      },
-      {
-        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
-          infer: true,
-        }),
-        expiresIn: this.configService.getOrThrow('auth.confirmEmailExpires', {
-          infer: true,
-        }),
-      },
-    );
-
-    await this.mailService.userSignUp({
-      to: dto.email,
-      data: {
-        hash,
-      },
-    });
+    // await this.mailService.userSignUp({
+    //   to: dto.email,
+    //   data: {
+    //     hash,
+    //   },
+    // });
   }
 
   async confirmEmail(hash: string): Promise<void> {

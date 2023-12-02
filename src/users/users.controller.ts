@@ -27,7 +27,7 @@ import { NullableType } from '../utils/types/nullable.type';
 import { QueryUserDto } from './dto/query-user.dto';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.admin)
+@Roles(RoleEnum.admin, RoleEnum.user)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Users')
 @Controller({
@@ -82,9 +82,9 @@ export class UsersController {
     return this.usersService.findOne({ id: +id });
   }
 
-  @SerializeOptions({
-    groups: ['admin'],
-  })
+  // @SerializeOptions({
+  //   groups: ['admin'],
+  // })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(

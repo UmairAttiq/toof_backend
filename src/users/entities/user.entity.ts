@@ -18,6 +18,7 @@ import bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
 import { Exclude, Expose } from 'class-transformer';
+import { UserProfileStatusEnum } from '../enums/user.enum';
 
 @Entity()
 export class User extends EntityHelper {
@@ -82,6 +83,13 @@ export class User extends EntityHelper {
     eager: true,
   })
   status?: Status;
+
+  @Column({
+    type: 'enum',
+    enum: UserProfileStatusEnum,
+  })
+  profile_status: UserProfileStatusEnum;
+
 
   @CreateDateColumn()
   createdAt: Date;
